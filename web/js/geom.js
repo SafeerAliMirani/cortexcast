@@ -102,4 +102,4 @@ export function sphereMesh(rings = 48, sectors = 64, radius = 1.0) {
   return { positions: new Float32Array(positions), indices: new Uint32Array(indices) };
 }
 
-// (removed dead headFeatures nose/ears helper — replaced by the real head mesh)
+// (removed dead headFeatures nose/ears helper, replaced by the real head mesh)
