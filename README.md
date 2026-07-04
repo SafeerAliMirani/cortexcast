@@ -4,6 +4,8 @@
 
 _By **Dr. Safeer Ali Mirani** — GPU / XR / real-time visualisation engineer and computational neuroscientist (PhD)._
 
+🔗 **Live demo: [cortexcast.netlify.app](https://cortexcast.netlify.app)**
+
 CortexCast loads real 64-channel EEG from people imagining left- or right-hand movement (the **PhysioNet EEG Motor Movement/Imagery** dataset), computes **μ (8–12 Hz)** and **β (13–30 Hz)** band power live with an in-browser FFT, and paints a rotating 3D scalp map whose colour is a GPU-interpolated blend of the 64 electrodes (hand-written WGSL, with contour isolines and a coverage mask). A decoder watches the **event-related desynchronisation** over the C3/C4 motor region — the opposite cortex quiets when you imagine a hand — and calls **left vs right**, scoring itself against the true cue. This is the exact kind of EEG/BCI analysis I do in MATLAB/MNE, rebuilt to run for anyone with a browser.
 
 ## Honest by design

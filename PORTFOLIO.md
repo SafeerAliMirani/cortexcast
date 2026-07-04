@@ -3,6 +3,8 @@
 **Dr. Safeer Ali Mirani** · GPU / XR / real-time visualisation engineer · computational neuroscientist (PhD)
 [safeer.ali.mirani@gmail.com](mailto:safeer.ali.mirani@gmail.com) · [Portfolio](https://safeeralimirani.netlify.app) · [GitHub](https://github.com/SafeerAliMirani) · [LinkedIn](https://www.linkedin.com/in/safeeralimirani)
 
+🔗 **Live demo: [cortexcast.netlify.app](https://cortexcast.netlify.app)**
+
 Reusable copy for a CV, portfolio site, or LinkedIn. All claims are accurate and verifiable.
 
 ## Résumé bullets
