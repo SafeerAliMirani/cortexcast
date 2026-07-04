@@ -1,86 +1,74 @@
-# CortexCast
+<h1 align="center">CortexCast</h1>
+<p align="center"><b>Real motor-imagery EEG, decoded live in your browser: a hand-written WGSL scalp topomap over a real head mesh, zero install.</b></p>
 
-**A browser brain–computer-interface demo: real motor-imagery EEG replays as a live WebGPU scalp map, and a decoder reads left-vs-right hand imagery from the motor cortex — zero install, hand-written WGSL.**
+<p align="center">
+  <a href="https://cortexcast.netlify.app"><img src="https://img.shields.io/badge/Live_Demo-cortexcast.netlify.app-2ea44f?style=for-the-badge&logo=netlify&logoColor=white" alt="Live Demo"></a>
+</p>
 
-_By **Dr. Safeer Ali Mirani** — GPU / XR / real-time visualisation engineer and computational neuroscientist (PhD)._
+<p align="center">
+  <img src="https://img.shields.io/badge/WebGPU-raw_%26_handwritten-ff6f00?style=for-the-badge" alt="WebGPU">
+  <img src="https://img.shields.io/badge/WGSL-raw_shaders-9b59b6?style=for-the-badge" alt="WGSL">
+  <img src="https://img.shields.io/badge/JavaScript-ES_modules-f7df1e?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
+  <img src="https://img.shields.io/badge/dependencies-none-4dd08a?style=for-the-badge" alt="No dependencies">
+  <img src="https://img.shields.io/badge/License-MIT-3178c6?style=for-the-badge" alt="MIT License">
+</p>
 
-🔗 **Live demo: [cortexcast.netlify.app](https://cortexcast.netlify.app)**
+**Live demo: [cortexcast.netlify.app](https://cortexcast.netlify.app)**
 
-CortexCast loads real 64-channel EEG from people imagining left- or right-hand movement (the **PhysioNet EEG Motor Movement/Imagery** dataset), computes **μ (8–12 Hz)** and **β (13–30 Hz)** band power live with an in-browser FFT, and paints a rotating 3D scalp map whose colour is a GPU-interpolated blend of the 64 electrodes (hand-written WGSL, with contour isolines and a coverage mask). A decoder watches the **event-related desynchronisation** over the C3/C4 motor region — the opposite cortex quiets when you imagine a hand — and calls **left vs right**, scoring itself against the true cue. This is the exact kind of EEG/BCI analysis I do in MATLAB/MNE, rebuilt to run for anyone with a browser.
+Built by [Dr. Safeer Ali Mirani](https://github.com/SafeerAliMirani), GPU / XR / real-time visualisation engineer and computational neuroscientist.
 
-## Honest by design
+## 🧠 What it does
 
-This is an **offline replay** of recorded data with a live read-out — a BCI-*style* demo, not a closed-loop BCI. The "decoder" is a physiology-based μ/β ERD contrast (C3/C4 motor ROI, 2 s window), **not** a trained classifier: **~60–66%** agreement with the cue on 2-class left/right (chance = 50%) — in-sample, not a held-out classifier score. The scalp colour shows **raw** band power; the decoder uses baseline-relative ERD. Every recording is real, cited, and only **reformatted** (never synthesised).
+CortexCast replays real 64-channel EEG recorded while people imagined moving their left or right hand (the PhysioNet EEG Motor Movement/Imagery dataset), computes mu (8 to 12 Hz) and beta (13 to 30 Hz) band power live with an in-browser FFT, and paints the result on a rotating 3D head as a GPU-interpolated scalp topomap. A decoder watches the motor cortex go quiet on the side opposite the imagined hand and calls left vs right, scoring itself against the real cue as it plays.
 
-## Features
+Everything runs in raw WebGPU with hand-written WGSL. No three.js, no plotting library, no ML framework. Open the link and it just works in a modern browser.
 
-- **Real EEG, in your browser** — 64-channel motor-imagery recordings; μ/β power via a hand-written radix-2 FFT (dsp.js).
-- **GPU scalp map** — a sphere whose every fragment is an inverse-distance blend of the 64 electrode values, in raw WGSL, with contour isolines and a neutral-scalp coverage mask (no smear where there are no sensors). Depth buffer + 4× MSAA.
-- **Live decoder** — mean μ/β ERD over a right vs left motor ROI across a 2 s trailing window → left / right / rest, with a ✓/✗ against the actual cue and a strength read-out.
-- **Scrolling EEG** — C3 / Cz / C4 raw traces with shaded cue windows and a playhead.
-- **Explore** — rotate the head, scroll to zoom, switch subjects/runs, toggle μ/β, play / scrub.
+## ⚙️ How it works
 
-## Real, public data — and how it's loaded
+**The data is real, and it's bundled.** PhysioNet's files are EDF+ (browsers can't parse that) and the server doesn't send CORS headers (browsers can't fetch it directly anyway), so `convert.py` runs once, offline: it downloads a handful of real recordings via MNE, reads the official 10-10 electrode positions, and reformats everything into compact `int16` blobs plus a `manifest.json`. Nothing is synthesised, only reformatted. The app then loads these same-origin, one recording at a time.
 
-Unlike a live-streaming demo, EEG can't be fetched straight into the browser: PhysioNet files are **EDF+** (browsers can't parse) and **CORS-blocked**, and the full set is 3.4 GB. So `convert.py` runs once, offline, to download a handful of real recordings and reformat them into compact `int16` blobs + a `manifest.json` (signals, real 10-10 electrode positions, T0/T1/T2 event labels) bundled in `web/data/`. The app then loads real, cited recordings same-origin, one at a time.
+**The FFT is hand-written.** `web/js/dsp.js` implements an in-place radix-2 FFT from scratch and slides a Hann-windowed frame across each channel to get mu and beta power over time. No signal-processing library involved.
 
-| Source | What | How |
-|---|---|---|
-| **PhysioNet eegmmidb** (DOI 10.13026/C28G6P, ODC-BY) | 64-ch motor-imagery EEG | downloaded + converted offline by `convert.py`, bundled as int16 + manifest |
+**The head is a real 3D scan, parsed by hand.** `web/js/mesh.js` fetches the LeePerrySmith head model (from the three.js examples) as a raw `.glb` file and parses the glTF binary container itself, reading out vertex positions and indices with a `DataView`. There's no three.js runtime here, just the file format understood and decoded directly.
 
-## Run it
+**The electrode cap is co-registered onto the head, not eyeballed.** `web/js/mesh.js` scans the parsed mesh for anatomical landmarks (crown, both ears, inion, nasion) by their geometry. `web/js/geom.js` then solves the affine transform that maps the official montage's anatomical anchors onto those detected landmarks, places all 64 electrodes accordingly, and snaps each one to the nearest real scalp vertex. This is the same landmark-based approach EEG software uses to fit a cap to a head.
+
+**The topomap is computed per-pixel on the GPU.** `web/js/shaders.js` is raw WGSL: every fragment on the scalp is an inverse-distance-weighted blend of all 64 electrode values, with `fwidth`-based contour isolines and a coverage mask so areas with no nearby sensors read as neutral scalp instead of smearing. `web/js/render-core.js` wires up the WebGPU pipelines with a depth buffer and 4x MSAA.
+
+**The decoder is a physiological contrast, not a trained model.** `web/js/app.js` computes per-band event-related desynchronisation, ERD, as `(baseline - power) / baseline` over two motor regions of interest centered on C3 (left hemisphere) and C4 (right hemisphere), averaged across a 2 second trailing window. Since the opposite hemisphere desynchronises during imagined movement, a stronger right-side drop means left-hand imagery and vice versa. The app thresholds that contrast into left, right, or rest, and checks it against the actual cue live on screen.
+
+## 🚀 Tech highlights
+
+- Raw WebGPU end to end: hand-written WGSL shaders, hand-built pipelines, no rendering library.
+- A from-scratch radix-2 FFT driving real spectral analysis, not a stand-in for one.
+- A `.glb` glTF file parsed by hand from its binary layout, no three.js or glTF loader.
+- 10-10 montage co-registration by detected anatomical landmarks and a solved affine transform, the same principle real EEG cap-fitting uses.
+- A GPU-side topographic interpolation with contour isolines and a coverage mask, computed per-fragment in the fragment shader.
+
+## 🔍 Honest by design
+
+This is an **offline replay** of recorded data with a live read-out, not a closed-loop brain-computer interface. The decoder is a **physiological contrast** (contralateral C3/C4 ERD), not a trained or cross-validated classifier. The accuracy figure, around 60 to 66 percent on 2-class left/right against a 50 percent chance baseline, is measured **in-sample**, not on held-out data. All of this is stated on screen in the app itself, not just here.
+
+## 🏃 Run it locally
 
 ```bash
-# one-time data prep (real recordings -> web/data/)
+# one-time data prep: downloads real recordings and converts them
 pip install mne numpy
 python convert.py
 
-# serve
+# serve the app (disables caching so you always see the latest files)
 cd web
-python serve.py        # then open http://localhost:8080
+python serve.py
+# open http://localhost:8080
 ```
 
-Requirements: a WebGPU browser (Chrome/Edge 113+ or desktop Safari 18+), Python 3 + MNE for the one-time conversion. `serve.py` just disables caching for local dev.
+`convert.py` is what regenerates everything in `web/data/`, the small `.i16` signal blobs plus `manifest.json` (channel positions, sample rate, event timing). Run it once and the app is fully self-contained after that, no server-side code, no build step, just static files. You'll need a WebGPU browser: Chrome or Edge 113+, or desktop Safari 18+.
 
-## Prior art & what's different
+## 📊 Data & credits
 
-EEG topographic maps are standard — MNE-Python, EEGLAB, and BCI toolkits all draw them, and motor-imagery decoding is a classic BCI benchmark. Those live in desktop Python/MATLAB. CortexCast is different in *where and how* it runs: the topomap is computed **on the GPU in hand-written WGSL** (not matplotlib), the FFT and decoder run **live in the browser** with no server or install, and it's honest about being a physiological contrast rather than a tuned classifier. The differentiator is the same as the rest of my portfolio — real data, raw WebGPU, open in a link.
+- **EEG**: [PhysioNet EEG Motor Movement/Imagery Dataset](https://physionet.org/content/eegmmidb/1.0.0/) (Schalk et al.), DOI [10.13026/C28G6P](https://doi.org/10.13026/C28G6P), Open Data Commons Attribution License v1.0. Reformatted for this app, not redistributed wholesale.
+- **Head model**: the LeePerrySmith head scan from the [three.js examples](https://github.com/mrdoob/three.js) (Infinite-Realities), CC-BY. Fetched from a CDN and parsed by hand; falls back to a procedural sphere if it can't load.
 
-## Architecture
+## 📜 License
 
-Plain ES modules, no bundler. `convert.py` (data prep) → `web/data/` → the app.
-
-| Module | Role |
-|---|---|
-| `convert.py` | one-time: PhysioNet EDF+ → int16 + manifest.json (signals, 10-10 positions, events) |
-| `web/js/eeg-data.js` | loads manifest + one recording's int16 (lazy), int16→µV |
-| `web/js/dsp.js` | radix-2 FFT; μ/β band-power envelopes; spectrogram |
-| `web/js/geom.js` | scalp sphere mesh; normalises electrodes to a unit head (y-up) |
-| `web/js/shaders.js` | WGSL: scalp-power topomap (interpolation + isolines + coverage) and electrode discs |
-| `web/js/render-core.js` | WebGPU device, pipelines, depth + 4× MSAA |
-| `web/js/camera.js` · `mat.js` | arcball camera + matrix math |
-| `web/js/app.js` | orchestrator: load, band power, topomap, ERD decoder, traces, UI |
-
-## Tech highlights
-
-- **GPU topographic interpolation** — 64-electrode inverse-distance blend per fragment in WGSL, with `fwidth`-based contour isolines and a coverage mask so the sensor-free scalp reads neutral.
-- **Real in-browser DSP** — hand-written FFT computes μ/β power per channel; per-band, baseline-relative ERD drives the decoder so μ and β contribute on equal footing.
-- **Honest decoding** — contralateral C3/C4 ERD over a 2 s window; self-scored against the cue; ~60–66% 2-class (in-sample, not held-out), stated on screen.
-- **Robust data path** — offline EDF+→int16 conversion with cited provenance; lazy per-recording load; atomic recording swaps.
-
-## Data source & credit
-
-- **EEG** — [PhysioNet EEG Motor Movement/Imagery Dataset](https://physionet.org/content/eegmmidb/1.0.0/) (Schalk et al.; DOI 10.13026/C28G6P; Open Data Commons Attribution License). Reformatted, not redistributed wholesale.
-
-## Author
-
-**Dr. Safeer Ali Mirani** — GPU / XR / real-time visualisation engineer and computational neuroscientist (PhD).
-[safeer.ali.mirani@gmail.com](mailto:safeer.ali.mirani@gmail.com) · [Portfolio](https://safeeralimirani.netlify.app) · [GitHub](https://github.com/SafeerAliMirani) · [LinkedIn](https://www.linkedin.com/in/safeeralimirani)
-
-## License
-
-[MIT](LICENSE) © 2026 Dr. Safeer Ali Mirani. EEG data © its authors (ODC-BY), loaded via a documented offline conversion.
-
-## Credits
-
-Head geometry: the *LeePerry Smith* head scan from the three.js examples (Infinite-Realities, CC-BY) — loaded from a CDN and parsed by hand; no three.js runtime is used. All EEG data: PhysioNet EEGMMIDB (ODC-BY). Falls back to a procedural sphere if the model can't be fetched.
+[MIT](LICENSE) © 2026 Dr. Safeer Ali Mirani. EEG data is © its authors under ODC-BY and loaded via the documented conversion above, not relicensed.

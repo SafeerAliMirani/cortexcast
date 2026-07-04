@@ -7,7 +7,7 @@ const BASE = "./data";
 
 export async function loadManifest() {
   const r = await fetch(`${BASE}/manifest.json`);
-  if (!r.ok) throw new Error("manifest.json: HTTP " + r.status + " — run convert.py first");
+  if (!r.ok) throw new Error("manifest.json: HTTP " + r.status + ", run convert.py first");
   return r.json();
 }
 

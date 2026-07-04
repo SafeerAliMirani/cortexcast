@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-CortexCast data prep — downloads a few REAL recordings from PhysioNet's
+CortexCast data prep: downloads a few REAL recordings from PhysioNet's
 EEG Motor Movement/Imagery Dataset (eegmmidb) and reformats the EDF+ files into
 compact int16 blobs + a manifest.json that the browser app loads same-origin.
 
 This is 100% real recorded data (PhysioNet eegmmidb v1.0.0, DOI 10.13026/C28G6P,
 Open Data Commons Attribution License). The script only DOWNLOADS and REFORMATS
-it — nothing is synthesised. It exists because the .edf files are EDF+ (browsers
+it, nothing is synthesised. It exists because the .edf files are EDF+ (browsers
 can't parse) and PhysioNet doesn't send CORS headers (browsers can't fetch them
 directly), so we convert a handful of runs once, offline, and bundle the result.
 
@@ -73,7 +73,7 @@ for subj in SUBJECTS:
 
             manifest.append({
                 "id": rec, "subject": subj, "run": run,
-                "task": "motor imagery — T0 rest, T1 left fist, T2 right fist",
+                "task": "motor imagery: T0 rest, T1 left fist, T2 right fist",
                 "sfreq": sf, "nChannels": len(labels), "nSamples": int(q.shape[1]),
                 "scaleUV": SCALE_UV, "layout": "int16 little-endian, channel-major [nCh][nSamp]",
                 "file": rec + ".i16", "events": events,

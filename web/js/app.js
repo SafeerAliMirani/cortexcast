@@ -40,7 +40,7 @@ async function boot() {
   try {
     setLoading("Loading real EEG recordings…");
     manifest = await loadManifest();
-    if (!manifest.recordings || !manifest.recordings.length) throw new Error("manifest has no recordings — run convert.py");
+    if (!manifest.recordings || !manifest.recordings.length) throw new Error("manifest has no recordings, run convert.py");
     elec = normalizeElectrodes(manifest.channels);
     const findIx = (nm) => elec.labels.findIndex((l) => l.toLowerCase() === nm.toLowerCase());
     roiL = ["C3", "FC3", "CP3", "C5", "C1"].map(findIx).filter((i) => i >= 0);
@@ -236,7 +236,7 @@ function setupInput() {
   const start = $("about-start"); if (start) start.onclick = closeAbout;
 }
 
-// ---- Left-vs-right grand-average comparison (two 2-D topomaps) ----
+// Left-vs-right grand-average comparison (two 2-D topomaps)
 function magma(t) {
   const cs = [[13,8,33],[79,23,107],[181,54,121],[245,125,77],[252,229,163]];
   const x = Math.max(0, Math.min(1, t)) * 4, i = Math.min(3, Math.floor(x)), f = x - i, A = cs[i], B = cs[i + 1];

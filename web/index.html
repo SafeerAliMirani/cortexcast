@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CortexCast — motor-imagery EEG decoder in the browser (WebGPU)</title>
+  <title>CortexCast: motor-imagery EEG decoder in the browser (WebGPU)</title>
   <meta name="description" content="Real motor-imagery EEG replayed in the browser: a WebGPU scalp topomap of mu/beta rhythms and a live left-vs-right imagery decoder. Built by Dr. Safeer Ali Mirani." />
   <meta name="author" content="Dr. Safeer Ali Mirani" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2305070e'/%3E%3Ccircle cx='16' cy='15' r='9' fill='none' stroke='%237c9cff' stroke-width='1.5'/%3E%3Ccircle cx='11' cy='13' r='2' fill='%237fb0ff'/%3E%3Ccircle cx='21' cy='13' r='2' fill='%23ff9b9b'/%3E%3Ccircle cx='16' cy='9' r='1.6' fill='%23e0b872'/%3E%3C/svg%3E" />
@@ -21,7 +21,7 @@
         <div class="subtitle">motor-imagery EEG · WebGPU</div>
       </div>
     </div>
-    <div class="tagline">Real recorded EEG of imagined hand movements — decoded in your browser as it plays.</div>
+    <div class="tagline">Real recorded EEG of imagined hand movements, decoded in your browser as it plays.</div>
     <dl class="stats">
       <div><dt>Record</dt><dd id="stat-rec">—</dd></div>
       <div><dt>Time</dt><dd id="stat-time">—</dd></div>
@@ -37,7 +37,7 @@
     <section>
       <h2>Decoded imagery</h2>
       <div id="decode" class="decode" aria-live="polite" aria-atomic="true">—</div>
-      <div class="hint2">Contrasts μ/β desynchronisation over the <b>opposite</b> motor cortex (C3 vs C4, 2 s window) to guess left vs right — about <b>60–66%</b> of the time (chance 50%).</div>
+      <div class="hint2">Contrasts μ/β desynchronisation over the <b>opposite</b> motor cortex (C3 vs C4, 2 s window) to guess left vs right, correct about <b>60–66%</b> of the time (chance 50%).</div>
     </section>
 
     <section>
@@ -83,12 +83,12 @@
       <button id="about-close" class="ghost tiny"><span aria-hidden="true">✕</span> close</button>
       <h1>What you're looking at</h1>
       <p>This replays <b>real 64-channel EEG</b> from people imagining left- or right-hand movement, from the <b>PhysioNet EEG Motor Movement/Imagery</b> dataset. Each electrode's <b>μ (8–12 Hz)</b> and <b>β (13–30 Hz)</b> power is computed live by an FFT in your browser.</p>
-      <p>The rotating head is a <b>topographic map</b>: every point on the scalp is a GPU-interpolated blend of the 64 electrode values (hand-written WGSL). When someone imagines a movement, the <b>opposite</b> motor cortex desynchronises — its μ/β power drops — which the decoder reads from <b>C3 vs C4</b> to call left vs right.</p>
-      <p class="muted">Honest notes: this is an <b>offline replay</b> of recorded data with a live read-out — a BCI-style demo, not a closed-loop BCI. The decoder is a physiology-based μ/β ERD contrast over the C3/C4 motor region (2 s window), <b>not</b> a trained classifier — measured ~60–66% on 2-class left/right (chance = 50%). The rotating head shows <b>raw</b> band power (per-recording scale); the decoder uses baseline-relative ERD. The <b>actual cue</b> is the true instruction, shown for comparison. Data is real recordings (imagined left/right fist), reformatted offline from EDF+ — nothing synthesised.</p>
+      <p>The rotating head is a <b>topographic map</b>: every point on the scalp is a GPU-interpolated blend of the 64 electrode values (hand-written WGSL). When someone imagines a movement, the <b>opposite</b> motor cortex desynchronises: its μ/β power drops, which the decoder reads from <b>C3 vs C4</b> to call left vs right.</p>
+      <p class="muted">Honest notes: this is an <b>offline replay</b> of recorded data with a live read-out, a BCI-style demo, not a closed-loop BCI. The decoder is a physiology-based μ/β ERD contrast over the C3/C4 motor region (2 s window), <b>not</b> a trained classifier: measured ~60–66% on 2-class left/right (chance = 50%). The rotating head shows <b>raw</b> band power (per-recording scale); the decoder uses baseline-relative ERD. The <b>actual cue</b> is the true instruction, shown for comparison. Data is real recordings (imagined left/right fist), reformatted offline from EDF+, nothing synthesised.</p>
       <p class="muted" id="prov">—</p>
       <button id="about-start" class="ghost">Start the demo →</button>
       <div class="about-credit">
-        <div>Designed &amp; built by <b>Dr. Safeer Ali Mirani</b> — GPU / XR / real-time visualisation engineer and computational neuroscientist (PhD). Hand-written WebGPU; real EEG signal processing in-browser.</div>
+        <div>Designed &amp; built by <b>Dr. Safeer Ali Mirani</b>, GPU / XR / real-time visualisation engineer and computational neuroscientist (PhD). Hand-written WebGPU; real EEG signal processing in-browser.</div>
         <div><a href="mailto:safeer.ali.mirani@gmail.com">safeer.ali.mirani@gmail.com</a> · <a href="https://safeeralimirani.netlify.app" target="_blank" rel="noopener">Portfolio</a> · <a href="https://github.com/SafeerAliMirani" target="_blank" rel="noopener">GitHub</a></div>
       </div>
     </div>
@@ -97,8 +97,8 @@
   <div id="compare" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Left vs right imagery comparison">
     <div class="about-card compare-card">
       <button id="compare-close" class="ghost tiny"><span aria-hidden="true">✕</span> close</button>
-      <h1>Left vs right imagery — grand average</h1>
-      <p>Each map is the μ/β desynchronisation <b>unique to that hand</b> — its ERD minus the other's, which cancels activity common to both hands and leaves the lateralised motor component. The bright patch then sits on the side <b>opposite</b> the imagined hand (left hand → right cortex): the contralateral signal the decoder reads. Top-down, nose up.</p>
+      <h1>Left vs right imagery: grand average</h1>
+      <p>Each map is the μ/β desynchronisation <b>unique to that hand</b>: its ERD minus the other's, which cancels activity common to both hands and leaves the lateralised motor component. The bright patch then sits on the side <b>opposite</b> the imagined hand (left hand → right cortex): the contralateral signal the decoder reads. Top-down, nose up.</p>
       <div class="topos">
         <figure><canvas id="topoL"></canvas><figcaption>imagining <b class="d-left">LEFT</b> hand</figcaption></figure>
         <figure><canvas id="topoR"></canvas><figcaption>imagining <b class="d-right">RIGHT</b> hand</figcaption></figure>

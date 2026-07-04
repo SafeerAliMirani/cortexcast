@@ -31,7 +31,7 @@ export function normalizeElectrodes(channels) {
 // maps the montage's four anatomical anchors (Cz, T7, T8, Iz) onto the mesh's
 // detected landmarks (crown, left ear, right ear, inion), apply it to all 64
 // electrodes, then seat each on the nearest scalp vertex. This is how EEG software
-// places a cap — by landmarks and the standard coordinates, not by guesswork.
+// places a cap: by landmarks and the standard coordinates, not by guesswork.
 export function coregister(elec, lm, meshPos) {
   const P = elec.posRaw, i = elec.index;
   const mp = (k) => [P[k * 3], P[k * 3 + 1], P[k * 3 + 2]];
