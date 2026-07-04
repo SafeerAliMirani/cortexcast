@@ -1,0 +1,11 @@
+# Netlify config for CortexCast - a static site, no build step. The converted
+# EEG data lives in web/data/ (committed); the app loads it same-origin.
+
+[build]
+  publish = "web"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
