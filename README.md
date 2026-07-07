@@ -72,3 +72,9 @@ python serve.py
 ## 📜 License
 
 [MIT](LICENSE) © 2026 Dr. Safeer Ali Mirani. EEG data is © its authors under ODC-BY and loaded via the documented conversion above, not relicensed.
+
+## Author
+
+Built by **Dr. Safeer Ali Mirani**, GPU / XR / real-time visualisation engineer and computational neuroscientist (PhD).
+
+[safeer.ali.mirani@gmail.com](mailto:safeer.ali.mirani@gmail.com) · [Portfolio](https://safeeralimirani.netlify.app) · [GitHub](https://github.com/SafeerAliMirani) · [LinkedIn](https://www.linkedin.com/in/safeeralimirani)
