@@ -2,7 +2,7 @@
 <p align="center"><b>Real motor-imagery EEG, decoded live in your browser: a hand-written WGSL scalp topomap over a real head mesh, zero install.</b></p>
 
 <p align="center">
-  <a href="https://cortexcast.netlify.app"><img src="https://img.shields.io/badge/Live_Demo-cortexcast.netlify.app-2ea44f?style=for-the-badge&logo=netlify&logoColor=white" alt="Live Demo"></a>
+  <a href="https://cortexcast.pages.dev"><img src="https://img.shields.io/badge/Live_Demo-cortexcast.pages.dev-2ea44f?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Live Demo"></a>
 </p>
 
 <p align="center">
@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/License-MIT-3178c6?style=for-the-badge" alt="MIT License">
 </p>
 
-**Live demo: [cortexcast.netlify.app](https://cortexcast.netlify.app)**
+**Live demo: [cortexcast.pages.dev](https://cortexcast.pages.dev)**
 
 Built by [Dr. Safeer Ali Mirani](https://github.com/SafeerAliMirani), GPU / XR / real-time visualisation engineer and computational neuroscientist.
 
@@ -77,4 +77,4 @@ python serve.py
 
 Built by **Dr. Safeer Ali Mirani**, GPU / XR / real-time visualisation engineer and computational neuroscientist (PhD).
 
-[safeer.ali.mirani@gmail.com](mailto:safeer.ali.mirani@gmail.com) · [Portfolio](https://safeeralimirani.netlify.app) · [GitHub](https://github.com/SafeerAliMirani) · [LinkedIn](https://www.linkedin.com/in/safeeralimirani)
+[safeer.ali.mirani@gmail.com](mailto:safeer.ali.mirani@gmail.com) · [Portfolio](https://safeeralimirani.pages.dev) · [GitHub](https://github.com/SafeerAliMirani) · [LinkedIn](https://www.linkedin.com/in/safeeralimirani)
