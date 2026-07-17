@@ -121,8 +121,11 @@
 (function(){
   var E='https://safeer-analytics.safeer-ali-mirani.workers.dev/collect';
   function send(t,l){try{var b=JSON.stringify({type:t,label:l||null,path:location.pathname,referrer:document.referrer||null});
-    if(navigator.sendBeacon)navigator.sendBeacon(E,new Blob([b],{type:'application/json'}));
-    else fetch(E,{method:'POST',body:b,headers:{'Content-Type':'application/json'},keepalive:true});}catch(_){ }}
+    /* text/plain is REQUIRED: application/json is not CORS-safelisted, so the browser
+       needs a preflight, drops the beacon SILENTLY, and sendBeacon still returns true.
+       The Worker parses the body as JSON regardless of the declared type. */
+    if(navigator.sendBeacon)navigator.sendBeacon(E,new Blob([b],{type:'text/plain;charset=UTF-8'}));
+    else fetch(E,{method:'POST',body:b,headers:{'Content-Type':'text/plain;charset=UTF-8'},keepalive:true});}catch(_){ }}
   send('pageview');
   document.addEventListener('click',function(e){
     var a=e.target.closest?e.target.closest('a'):null; if(!a)return;
@@ -133,5 +136,48 @@
   },true);
 })();
 </script>
+<!-- tour: steps for this page, then the shared engine -->
+<script>
+window.TOUR_STEPS = [
+  {
+    "sel": "#hud",
+    "title": "What you are looking at",
+    "body": "A real person, in a lab, imagining moving their left or right hand. This is their actual EEG, 64 electrodes on a real head, replayed at the speed it was recorded."
+  },
+  {
+    "sel": "#rec",
+    "title": "Pick a recording",
+    "body": "Real subjects from PhysioNet. Each one is a different person doing the same task."
+  },
+  {
+    "sel": "#decode",
+    "title": "The decode, live",
+    "body": "This is the guess: left hand or right hand, read off the brain rhythm as it plays. It is right about two thirds of the time, which is honest for this method and this little data."
+  },
+  {
+    "sel": "#tracewrap",
+    "title": "The raw signal",
+    "body": "The voltage from the electrodes, unprocessed. Everything else on this page is derived from these squiggles."
+  },
+  {
+    "sel": "#play",
+    "title": "Play, pause, scrub",
+    "body": "Move through the recording at your own speed and watch the scalp map change with it."
+  },
+  {
+    "sel": "#compare-btn",
+    "title": "Left against right",
+    "body": "Put the two imagined hands side by side. The difference over the motor cortex is the whole basis for the decode."
+  },
+  {
+    "sel": "#about-btn",
+    "title": "Where it all comes from",
+    "body": "The dataset, the licence, and who built this."
+  }
+];
+window.TOUR_OPTIONS = { readySel: "#hud" };
+</script>
+<script src="tour.js"></script>
+<!-- /tour -->
 </body>
 </html>
